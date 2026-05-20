@@ -2,12 +2,14 @@ pipeline {
     agent any
 
     environment {
-        // Endereços locais nativos (Sinal -> Envoy -> Motores -> Banco)
+        // Aponta os endereços locais
         ENVOY_URL      = 'localhost:10000'
-        POSTGRES_DB    = 'postgresql://localhost:5432/cambio_vector'
+        POSTGRES_DB    = 'postgresql://agente_go:senha_segura@localhost:5432/cambio_vector'
         REDIS_URL      = 'redis://localhost:6379'
         
-        // Configuração de ambiente para compilação local segura
+        // FORÇA O JENKINS A ENXERGAR OS COMPILADORES DA SUA MÁQUINA
+        PATH           = "/usr/local/bin:/usr/bin:/bin:/usr/local/go/bin:/home/devildev/.cargo/bin:$PATH"
+        
         RUST_BACKTRACE = '1'
         GOENV          = 'production'
     }
