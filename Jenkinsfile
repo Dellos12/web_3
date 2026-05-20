@@ -18,8 +18,6 @@ pipeline {
         stage('1. Validação de Contrato Semântico') {
             steps {
                 echo '=== ESTÁGIO 1: Checando integridade do arquivo .proto ==='
-                // O comando "buf lint" impede alterações que quebrem o contrato binário
-                // Adicionada a flag --path para o buf entender a nova raiz
                 sh 'buf lint contracts/ --path contracts/cambio/regulatorio/v1/cambio.proto'
             }
         }
@@ -27,9 +25,7 @@ pipeline {
         stage('2. Compilação Bare-Metal (Rust & Go)') {
             steps {
                 echo '=== ESTÁGIO 2: Compilando motores nativos para o Backplane ==='
-                // Adicionado o "+stable" para forçar o rustup a escolher a versão correta
                 sh 'cd svc-stream-rust && cargo +stable build --release'
-                // Go compila o binário do agente estratégico
                 sh 'cd svc-agente-go && go build -o agente_roteador main.go'
             }
         }
@@ -37,16 +33,14 @@ pipeline {
         stage('3. Auditoria do Espaço Vetorial (Postgres 16)') {
             steps {
                 echo '=== ESTÁGIO 3: Validando integridade do PgVector e Índices HNSW ==='
-                // Valida se o banco local está ativo e se a extensão vetorial está operando por cosseno
-                sh 'psql "${POSTGRES_DB}" -c "SELECT extname, extversion FROM pg_extension WHERE extname = \'pgvector\';"'
+                // Alterado de 'pgvector' para 'vector' para refletir a compilação nativa
+                sh 'psql postgresql://agente_go:senha_segura@localhost:5432/cambio_vector -c "SELECT extname, extversion FROM pg_extension WHERE extname = \'vector\';"'
             }
         }
 
         stage('4. Simulação de Stream Regulatório e Prova do Cosseno') {
             steps {
                 echo '=== ESTÁGIO 4: Injetando transações de Dropshipping B2B via Stream ==='
-                // Dispara o script Python para simular a carga real batendo no Envoy local
-                // O script valida o tempo de resposta e se o SHA cruzou corretamente com o vetor
                 sh 'python3 analytics-python/simular_estresse.py --target ${ENVOY_URL}'
             }
         }
