@@ -1,6 +1,6 @@
 
 -- Ativa a extensão de álgebra linear e vetores na versão instalada localmente
-CREATE EXTENSION IF NOT EXISTS pgvector;
+CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Tabela para armazenar o espaço vetorial regulatório (CNAEs e Regras do IVA Dual)
 CREATE TABLE IF NOT EXISTS matriz_regulatoria (

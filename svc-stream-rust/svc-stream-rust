@@ -1,0 +1,6 @@
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Compila o contrato unificado compartilhando a mesma estrutura com o Go
+    tonic_build::compile_proto("../contracts/cambio.proto")?;
+    Ok(())
+}
