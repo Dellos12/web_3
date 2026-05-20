@@ -1,0 +1,52 @@
+
+syntax = "proto3";
+
+package cambio.regulatorio.v1;
+
+// Define o pacote gerado para o código Go
+option go_package = "svc-agente-go/regulatorio/v1;regulatoriov1";
+
+// O primeiro diálogo inteligente da API
+service RoteadorFiscalService {
+  // Transpõe o sinal em stream contínuo para máxima velocidade
+  rpc ValidarE_RotearTransacao (RequestTransacao) returns (ResponseDirecionamento);
+}
+
+message RequestTransacao {
+  string transacao_id = 1;         // UUID único da operação de câmbio
+  string cnae_emissor = 2;         // CNAE da empresa B2B / Dropshipping
+  string cnpj_emissor = 3;         // CNPJ para validação ICP-Brasil
+  double valor_operacao_brl = 4;   // Valor bruto em reais
+  string moeda_destino_iso = 5;    // Ex: "USD", "EUR"
+  
+  // Coordenadas geográficas para cálculo do IVA Dual (Destino do Consumo)
+  double latitude_destino = 6;
+  double longitude_destino = 7;
+
+  // O Lacre Criptográfico: SHA-256 do documento fiscal correspondente
+  string documento_fiscal_sha256 = 8;
+
+  // O Espaço Vetorial: Embedding de 1536 dimensões representando o comportamento
+  repeated float operacao_embedding = 9;
+}
+
+message ResponseDirecionamento {
+  string transacao_id = 1;
+  bool conformidade_aprovada = 2;
+  
+  // O Split Payment calculado em milissegundos pela geometria tributária
+  double aliquota_cbs_federal = 3;
+  double aliquota_ibs_estadual = 4;
+  double valor_imposto_retido_brl = 5;
+
+  // O "Engate" que diz para o Envoy onde descarregar o sinal no backplane
+  enum RailDestino {
+    RAIL_REJEITADO = 0;
+    RAIL_TRADICIONAL_HTTP2 = 1;   // Bancos tradicionais / SWIFT
+    RAIL_DESCENTRALIZADO_WEB3 = 2; // Liquidação via Blockchain / Drex
+  }
+  RailDestino rail_escolhido = 6;
+  
+  // Hash SHA de auditoria combinando o estado do sistema + transação original
+  string hash_auditoria_estado = 7;
+}
