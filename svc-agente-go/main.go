@@ -7,10 +7,9 @@ import (
     "log"
     "net"
 
-    _ "github.com/lib/pq"
+    _ "github.com/lib/pq" // Corrigido: driver Postgres
     "google.golang.org/grpc"
-
-    // Pacote local gerado pelo protoc
+    
     pb "svc-agente-go/regulatorio/v1"
 )
 
@@ -19,17 +18,19 @@ type AgenteGoServer struct {
     db *sql.DB
 }
 
-func (s *AgenteGoServer) ValidarE_RotearTransacao(ctx context.Context, req *pb.RequestTransacao) (*pb.ResponseDirecionamento, error) {
-    // Formata vetor para PgVector
+// 📐 A PROVA DO COSSENO: Atualizado com os novos nomes do contrato do Buf
+func (s *AgenteGoServer) ValidarERotearTransacao(ctx context.Context, req *pb.ValidarERotearTransacaoRequest) (*pb.ValidarERotearTransacaoResponse, error) {
+    
+    // Transforma o array de floats em uma string formatada para o tipo 'vector'
     var vetorFormatado string
     for i, val := range req.OperacaoEmbedding {
         if i == 0 {
-            vetorFormatado += fmt.Sprintf("{%f", val)
+            vetorFormatado += fmt.Sprintf("[%f", val)
         } else {
             vetorFormatado += fmt.Sprintf(",%f", val)
         }
     }
-    vetorFormatado += "}"
+    vetorFormatado += "]"
 
     var cnaeCodigo string
     var aliquotaCbs, aliquotaIbs float64
@@ -44,35 +45,38 @@ func (s *AgenteGoServer) ValidarE_RotearTransacao(ctx context.Context, req *pb.R
     err := s.db.QueryRowContext(ctx, query, vetorFormatado).Scan(&cnaeCodigo, &aliquotaCbs, &aliquotaIbs, &cossenoDistancia)
     if err != nil {
         log.Printf("⚠️ Erro ao calcular cosseno no PgVector: %v", err)
-        return &pb.ResponseDirecionamento{ConformidadeAprovada: false, RailEscolhido: pb.ResponseDirecionamento_RAIL_REJEITADO}, nil
+        return &pb.ValidarERotearTransacaoResponse{
+            ConformidadeAprovada: false,
+            RailEscolhido: pb.ValidarERotearTransacaoResponse_RAIL_DESTINO_REJEITADO_UNSPECIFIED,
+        }, nil
     }
 
     similaridadeCosseno := 1.0 - cossenoDistancia
-    log.Printf("📊 Similaridade com a matriz regulatória: %f", similaridadeCosseno)
+    log.Printf("📊 Proximidade geométrica com a Reforma Tributária: %f", similaridadeCosseno)
 
     if similaridadeCosseno < 0.85 {
-        return &pb.ResponseDirecionamento{
+        return &pb.ValidarERotearTransacaoResponse{
             TransacaoId:          req.TransacaoId,
             ConformidadeAprovada: false,
-            RailEscolhido:        pb.ResponseDirecionamento_RAIL_REJEITADO,
+            RailEscolhido:        pb.ValidarERotearTransacaoResponse_RAIL_DESTINO_REJEITADO_UNSPECIFIED,
         }, nil
     }
 
     valorImposto := req.ValorOperacaoBrl * ((aliquotaCbs + aliquotaIbs) / 100.0)
 
-    return &pb.ResponseDirecionamento{
+    return &pb.ValidarERotearTransacaoResponse{
         TransacaoId:           req.TransacaoId,
         ConformidadeAprovada:  true,
         AliquotaCbsFederal:    aliquotaCbs,
         AliquotaIbsEstadual:   aliquotaIbs,
         ValorImpostoRetidoBrl: valorImposto,
-        RailEscolhido:         pb.ResponseDirecionamento_RAIL_DESCENTRALIZADO_WEB3,
+        RailEscolhido:         pb.ValidarERotearTransacaoResponse_RAIL_DESTINO_DESCENTRALIZADO_WEB3, 
         HashAuditoriaEstado:   req.DocumentoFiscalSha256,
     }, nil
 }
 
 func main() {
-    dsn := "postgresql://postgres:postgres@localhost:5432/cambio_vector?sslmode=disable"
+    dsn := "postgresql://agente_go:senha_segura@localhost:5432/cambio_vector?sslmode=disable"
     db, err := sql.Open("postgres", dsn)
     if err != nil {
         log.Fatalf("Falha ao abrir banco local: %v", err)
@@ -88,7 +92,7 @@ func main() {
     server := &AgenteGoServer{db: db}
     pb.RegisterRoteadorFiscalServiceServer(grpcServer, server)
 
-    log.Println("🔀 Agente Orquestrador Go rodando na porta :50052...")
+    log.Println("🔀 Agente Orquestrador Go rodando localmente na porta :50052...")
     if err := grpcServer.Serve(lis); err != nil {
         log.Fatalf("Falha no servidor gRPC Go: %v", err)
     }
