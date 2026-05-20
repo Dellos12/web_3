@@ -27,8 +27,8 @@ pipeline {
         stage('2. Compilação Bare-Metal (Rust & Go)') {
             steps {
                 echo '=== ESTÁGIO 2: Compilando motores nativos para o Backplane ==='
-                // Rust compila em modo release para garantir latência de microssegundos no SHA
-                sh 'cd svc-stream-rust && cargo build --release'
+                // Adicionado o "+stable" para forçar o rustup a escolher a versão correta
+                sh 'cd svc-stream-rust && cargo +stable build --release'
                 // Go compila o binário do agente estratégico
                 sh 'cd svc-agente-go && go build -o agente_roteador main.go'
             }
