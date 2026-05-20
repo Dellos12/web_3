@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v3.21.12
-// source: contracts/cambio.proto
+// source: cambio/regulatorio/v1/cambio.proto
 
 package regulatoriov1
 
@@ -21,89 +21,86 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// O "Engate" que diz para o Envoy onde descarregar o sinal no backplane
-type ResponseDirecionamento_RailDestino int32
+// Enumeração corrigida com os prefixos e o valor 0 UNSPECIFIED exigido pelo buf
+type ValidarERotearTransacaoResponse_RailDestino int32
 
 const (
-	ResponseDirecionamento_RAIL_REJEITADO            ResponseDirecionamento_RailDestino = 0
-	ResponseDirecionamento_RAIL_TRADICIONAL_HTTP2    ResponseDirecionamento_RailDestino = 1 // Bancos tradicionais / SWIFT
-	ResponseDirecionamento_RAIL_DESCENTRALIZADO_WEB3 ResponseDirecionamento_RailDestino = 2 // Liquidação via Blockchain / Drex
+	ValidarERotearTransacaoResponse_RAIL_DESTINO_REJEITADO_UNSPECIFIED ValidarERotearTransacaoResponse_RailDestino = 0
+	ValidarERotearTransacaoResponse_RAIL_DESTINO_TRADICIONAL_HTTP2     ValidarERotearTransacaoResponse_RailDestino = 1
+	ValidarERotearTransacaoResponse_RAIL_DESTINO_DESCENTRALIZADO_WEB3  ValidarERotearTransacaoResponse_RailDestino = 2
 )
 
-// Enum value maps for ResponseDirecionamento_RailDestino.
+// Enum value maps for ValidarERotearTransacaoResponse_RailDestino.
 var (
-	ResponseDirecionamento_RailDestino_name = map[int32]string{
-		0: "RAIL_REJEITADO",
-		1: "RAIL_TRADICIONAL_HTTP2",
-		2: "RAIL_DESCENTRALIZADO_WEB3",
+	ValidarERotearTransacaoResponse_RailDestino_name = map[int32]string{
+		0: "RAIL_DESTINO_REJEITADO_UNSPECIFIED",
+		1: "RAIL_DESTINO_TRADICIONAL_HTTP2",
+		2: "RAIL_DESTINO_DESCENTRALIZADO_WEB3",
 	}
-	ResponseDirecionamento_RailDestino_value = map[string]int32{
-		"RAIL_REJEITADO":            0,
-		"RAIL_TRADICIONAL_HTTP2":    1,
-		"RAIL_DESCENTRALIZADO_WEB3": 2,
+	ValidarERotearTransacaoResponse_RailDestino_value = map[string]int32{
+		"RAIL_DESTINO_REJEITADO_UNSPECIFIED": 0,
+		"RAIL_DESTINO_TRADICIONAL_HTTP2":     1,
+		"RAIL_DESTINO_DESCENTRALIZADO_WEB3":  2,
 	}
 )
 
-func (x ResponseDirecionamento_RailDestino) Enum() *ResponseDirecionamento_RailDestino {
-	p := new(ResponseDirecionamento_RailDestino)
+func (x ValidarERotearTransacaoResponse_RailDestino) Enum() *ValidarERotearTransacaoResponse_RailDestino {
+	p := new(ValidarERotearTransacaoResponse_RailDestino)
 	*p = x
 	return p
 }
 
-func (x ResponseDirecionamento_RailDestino) String() string {
+func (x ValidarERotearTransacaoResponse_RailDestino) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (ResponseDirecionamento_RailDestino) Descriptor() protoreflect.EnumDescriptor {
-	return file_contracts_cambio_proto_enumTypes[0].Descriptor()
+func (ValidarERotearTransacaoResponse_RailDestino) Descriptor() protoreflect.EnumDescriptor {
+	return file_cambio_regulatorio_v1_cambio_proto_enumTypes[0].Descriptor()
 }
 
-func (ResponseDirecionamento_RailDestino) Type() protoreflect.EnumType {
-	return &file_contracts_cambio_proto_enumTypes[0]
+func (ValidarERotearTransacaoResponse_RailDestino) Type() protoreflect.EnumType {
+	return &file_cambio_regulatorio_v1_cambio_proto_enumTypes[0]
 }
 
-func (x ResponseDirecionamento_RailDestino) Number() protoreflect.EnumNumber {
+func (x ValidarERotearTransacaoResponse_RailDestino) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use ResponseDirecionamento_RailDestino.Descriptor instead.
-func (ResponseDirecionamento_RailDestino) EnumDescriptor() ([]byte, []int) {
-	return file_contracts_cambio_proto_rawDescGZIP(), []int{1, 0}
+// Deprecated: Use ValidarERotearTransacaoResponse_RailDestino.Descriptor instead.
+func (ValidarERotearTransacaoResponse_RailDestino) EnumDescriptor() ([]byte, []int) {
+	return file_cambio_regulatorio_v1_cambio_proto_rawDescGZIP(), []int{1, 0}
 }
 
-type RequestTransacao struct {
-	state            protoimpl.MessageState `protogen:"open.v1"`
-	TransacaoId      string                 `protobuf:"bytes,1,opt,name=transacao_id,json=transacaoId,proto3" json:"transacao_id,omitempty"`                    // UUID único da operação de câmbio
-	CnaeEmissor      string                 `protobuf:"bytes,2,opt,name=cnae_emissor,json=cnaeEmissor,proto3" json:"cnae_emissor,omitempty"`                    // CNAE da empresa B2B / Dropshipping
-	CnpjEmissor      string                 `protobuf:"bytes,3,opt,name=cnpj_emissor,json=cnpjEmissor,proto3" json:"cnpj_emissor,omitempty"`                    // CNPJ para validação ICP-Brasil
-	ValorOperacaoBrl float64                `protobuf:"fixed64,4,opt,name=valor_operacao_brl,json=valorOperacaoBrl,proto3" json:"valor_operacao_brl,omitempty"` // Valor bruto em reais
-	MoedaDestinoIso  string                 `protobuf:"bytes,5,opt,name=moeda_destino_iso,json=moedaDestinoIso,proto3" json:"moeda_destino_iso,omitempty"`      // Ex: "USD", "EUR"
-	// Coordenadas geográficas para cálculo do IVA Dual (Destino do Consumo)
-	LatitudeDestino  float64 `protobuf:"fixed64,6,opt,name=latitude_destino,json=latitudeDestino,proto3" json:"latitude_destino,omitempty"`
-	LongitudeDestino float64 `protobuf:"fixed64,7,opt,name=longitude_destino,json=longitudeDestino,proto3" json:"longitude_destino,omitempty"`
-	// O Lacre Criptográfico: SHA-256 do documento fiscal correspondente
-	DocumentoFiscalSha256 string `protobuf:"bytes,8,opt,name=documento_fiscal_sha256,json=documentoFiscalSha256,proto3" json:"documento_fiscal_sha256,omitempty"`
-	// O Espaço Vetorial: Embedding de 1536 dimensões representando o comportamento
-	OperacaoEmbedding []float32 `protobuf:"fixed32,9,rep,packed,name=operacao_embedding,json=operacaoEmbedding,proto3" json:"operacao_embedding,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+type ValidarERotearTransacaoRequest struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	TransacaoId           string                 `protobuf:"bytes,1,opt,name=transacao_id,json=transacaoId,proto3" json:"transacao_id,omitempty"`
+	CnaeEmissor           string                 `protobuf:"bytes,2,opt,name=cnae_emissor,json=cnaeEmissor,proto3" json:"cnae_emissor,omitempty"`
+	CnpjEmissor           string                 `protobuf:"bytes,3,opt,name=cnpj_emissor,json=cnpjEmissor,proto3" json:"cnpj_emissor,omitempty"`
+	ValorOperacaoBrl      float64                `protobuf:"fixed64,4,opt,name=valor_operacao_brl,json=valorOperacaoBrl,proto3" json:"valor_operacao_brl,omitempty"`
+	CurrencyDestinoIso    string                 `protobuf:"bytes,5,opt,name=currency_destino_iso,json=currencyDestinoIso,proto3" json:"currency_destino_iso,omitempty"`
+	LatitudeDestino       float64                `protobuf:"fixed64,6,opt,name=latitude_destino,json=latitudeDestino,proto3" json:"latitude_destino,omitempty"`
+	LongitudeDestino      float64                `protobuf:"fixed64,7,opt,name=longitude_destino,json=longitudeDestino,proto3" json:"longitude_destino,omitempty"`
+	DocumentoFiscalSha256 string                 `protobuf:"bytes,8,opt,name=documento_fiscal_sha256,json=documentoFiscalSha256,proto3" json:"documento_fiscal_sha256,omitempty"`
+	OperacaoEmbedding     []float32              `protobuf:"fixed32,9,rep,packed,name=operacao_embedding,json=operacaoEmbedding,proto3" json:"operacao_embedding,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
-func (x *RequestTransacao) Reset() {
-	*x = RequestTransacao{}
-	mi := &file_contracts_cambio_proto_msgTypes[0]
+func (x *ValidarERotearTransacaoRequest) Reset() {
+	*x = ValidarERotearTransacaoRequest{}
+	mi := &file_cambio_regulatorio_v1_cambio_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *RequestTransacao) String() string {
+func (x *ValidarERotearTransacaoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RequestTransacao) ProtoMessage() {}
+func (*ValidarERotearTransacaoRequest) ProtoMessage() {}
 
-func (x *RequestTransacao) ProtoReflect() protoreflect.Message {
-	mi := &file_contracts_cambio_proto_msgTypes[0]
+func (x *ValidarERotearTransacaoRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_cambio_regulatorio_v1_cambio_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -114,104 +111,102 @@ func (x *RequestTransacao) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RequestTransacao.ProtoReflect.Descriptor instead.
-func (*RequestTransacao) Descriptor() ([]byte, []int) {
-	return file_contracts_cambio_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use ValidarERotearTransacaoRequest.ProtoReflect.Descriptor instead.
+func (*ValidarERotearTransacaoRequest) Descriptor() ([]byte, []int) {
+	return file_cambio_regulatorio_v1_cambio_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *RequestTransacao) GetTransacaoId() string {
+func (x *ValidarERotearTransacaoRequest) GetTransacaoId() string {
 	if x != nil {
 		return x.TransacaoId
 	}
 	return ""
 }
 
-func (x *RequestTransacao) GetCnaeEmissor() string {
+func (x *ValidarERotearTransacaoRequest) GetCnaeEmissor() string {
 	if x != nil {
 		return x.CnaeEmissor
 	}
 	return ""
 }
 
-func (x *RequestTransacao) GetCnpjEmissor() string {
+func (x *ValidarERotearTransacaoRequest) GetCnpjEmissor() string {
 	if x != nil {
 		return x.CnpjEmissor
 	}
 	return ""
 }
 
-func (x *RequestTransacao) GetValorOperacaoBrl() float64 {
+func (x *ValidarERotearTransacaoRequest) GetValorOperacaoBrl() float64 {
 	if x != nil {
 		return x.ValorOperacaoBrl
 	}
 	return 0
 }
 
-func (x *RequestTransacao) GetMoedaDestinoIso() string {
+func (x *ValidarERotearTransacaoRequest) GetCurrencyDestinoIso() string {
 	if x != nil {
-		return x.MoedaDestinoIso
+		return x.CurrencyDestinoIso
 	}
 	return ""
 }
 
-func (x *RequestTransacao) GetLatitudeDestino() float64 {
+func (x *ValidarERotearTransacaoRequest) GetLatitudeDestino() float64 {
 	if x != nil {
 		return x.LatitudeDestino
 	}
 	return 0
 }
 
-func (x *RequestTransacao) GetLongitudeDestino() float64 {
+func (x *ValidarERotearTransacaoRequest) GetLongitudeDestino() float64 {
 	if x != nil {
 		return x.LongitudeDestino
 	}
 	return 0
 }
 
-func (x *RequestTransacao) GetDocumentoFiscalSha256() string {
+func (x *ValidarERotearTransacaoRequest) GetDocumentoFiscalSha256() string {
 	if x != nil {
 		return x.DocumentoFiscalSha256
 	}
 	return ""
 }
 
-func (x *RequestTransacao) GetOperacaoEmbedding() []float32 {
+func (x *ValidarERotearTransacaoRequest) GetOperacaoEmbedding() []float32 {
 	if x != nil {
 		return x.OperacaoEmbedding
 	}
 	return nil
 }
 
-type ResponseDirecionamento struct {
-	state                protoimpl.MessageState `protogen:"open.v1"`
-	TransacaoId          string                 `protobuf:"bytes,1,opt,name=transacao_id,json=transacaoId,proto3" json:"transacao_id,omitempty"`
-	ConformidadeAprovada bool                   `protobuf:"varint,2,opt,name=conformidade_aprovada,json=conformidadeAprovada,proto3" json:"conformidade_aprovada,omitempty"`
-	// O Split Payment calculado em milissegundos pela geometria tributária
-	AliquotaCbsFederal    float64                            `protobuf:"fixed64,3,opt,name=aliquota_cbs_federal,json=aliquotaCbsFederal,proto3" json:"aliquota_cbs_federal,omitempty"`
-	AliquotaIbsEstadual   float64                            `protobuf:"fixed64,4,opt,name=aliquota_ibs_estadual,json=aliquotaIbsEstadual,proto3" json:"aliquota_ibs_estadual,omitempty"`
-	ValorImpostoRetidoBrl float64                            `protobuf:"fixed64,5,opt,name=valor_imposto_retido_brl,json=valorImpostoRetidoBrl,proto3" json:"valor_imposto_retido_brl,omitempty"`
-	RailEscolhido         ResponseDirecionamento_RailDestino `protobuf:"varint,6,opt,name=rail_escolhido,json=railEscolhido,proto3,enum=cambio.regulatorio.v1.ResponseDirecionamento_RailDestino" json:"rail_escolhido,omitempty"`
-	// Hash SHA de auditoria combinando o estado do sistema + transação original
-	HashAuditoriaEstado string `protobuf:"bytes,7,opt,name=hash_auditoria_estado,json=hashAuditoriaEstado,proto3" json:"hash_auditoria_estado,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+type ValidarERotearTransacaoResponse struct {
+	state                 protoimpl.MessageState                      `protogen:"open.v1"`
+	TransacaoId           string                                      `protobuf:"bytes,1,opt,name=transacao_id,json=transacaoId,proto3" json:"transacao_id,omitempty"`
+	ConformidadeAprovada  bool                                        `protobuf:"varint,2,opt,name=conformidade_aprovada,json=conformidadeAprovada,proto3" json:"conformidade_aprovada,omitempty"`
+	AliquotaCbsFederal    float64                                     `protobuf:"fixed64,3,opt,name=aliquota_cbs_federal,json=aliquotaCbsFederal,proto3" json:"aliquota_cbs_federal,omitempty"`
+	AliquotaIbsEstadual   float64                                     `protobuf:"fixed64,4,opt,name=aliquota_ibs_estadual,json=aliquotaIbsEstadual,proto3" json:"aliquota_ibs_estadual,omitempty"`
+	ValorImpostoRetidoBrl float64                                     `protobuf:"fixed64,5,opt,name=valor_imposto_retido_brl,json=valorImpostoRetidoBrl,proto3" json:"valor_imposto_retido_brl,omitempty"`
+	RailEscolhido         ValidarERotearTransacaoResponse_RailDestino `protobuf:"varint,6,opt,name=rail_escolhido,json=railEscolhido,proto3,enum=cambio.regulatorio.v1.ValidarERotearTransacaoResponse_RailDestino" json:"rail_escolhido,omitempty"`
+	HashAuditoriaEstado   string                                      `protobuf:"bytes,7,opt,name=hash_auditoria_estado,json=hashAuditoriaEstado,proto3" json:"hash_auditoria_estado,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
-func (x *ResponseDirecionamento) Reset() {
-	*x = ResponseDirecionamento{}
-	mi := &file_contracts_cambio_proto_msgTypes[1]
+func (x *ValidarERotearTransacaoResponse) Reset() {
+	*x = ValidarERotearTransacaoResponse{}
+	mi := &file_cambio_regulatorio_v1_cambio_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ResponseDirecionamento) String() string {
+func (x *ValidarERotearTransacaoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ResponseDirecionamento) ProtoMessage() {}
+func (*ValidarERotearTransacaoResponse) ProtoMessage() {}
 
-func (x *ResponseDirecionamento) ProtoReflect() protoreflect.Message {
-	mi := &file_contracts_cambio_proto_msgTypes[1]
+func (x *ValidarERotearTransacaoResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_cambio_regulatorio_v1_cambio_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -222,113 +217,113 @@ func (x *ResponseDirecionamento) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ResponseDirecionamento.ProtoReflect.Descriptor instead.
-func (*ResponseDirecionamento) Descriptor() ([]byte, []int) {
-	return file_contracts_cambio_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use ValidarERotearTransacaoResponse.ProtoReflect.Descriptor instead.
+func (*ValidarERotearTransacaoResponse) Descriptor() ([]byte, []int) {
+	return file_cambio_regulatorio_v1_cambio_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ResponseDirecionamento) GetTransacaoId() string {
+func (x *ValidarERotearTransacaoResponse) GetTransacaoId() string {
 	if x != nil {
 		return x.TransacaoId
 	}
 	return ""
 }
 
-func (x *ResponseDirecionamento) GetConformidadeAprovada() bool {
+func (x *ValidarERotearTransacaoResponse) GetConformidadeAprovada() bool {
 	if x != nil {
 		return x.ConformidadeAprovada
 	}
 	return false
 }
 
-func (x *ResponseDirecionamento) GetAliquotaCbsFederal() float64 {
+func (x *ValidarERotearTransacaoResponse) GetAliquotaCbsFederal() float64 {
 	if x != nil {
 		return x.AliquotaCbsFederal
 	}
 	return 0
 }
 
-func (x *ResponseDirecionamento) GetAliquotaIbsEstadual() float64 {
+func (x *ValidarERotearTransacaoResponse) GetAliquotaIbsEstadual() float64 {
 	if x != nil {
 		return x.AliquotaIbsEstadual
 	}
 	return 0
 }
 
-func (x *ResponseDirecionamento) GetValorImpostoRetidoBrl() float64 {
+func (x *ValidarERotearTransacaoResponse) GetValorImpostoRetidoBrl() float64 {
 	if x != nil {
 		return x.ValorImpostoRetidoBrl
 	}
 	return 0
 }
 
-func (x *ResponseDirecionamento) GetRailEscolhido() ResponseDirecionamento_RailDestino {
+func (x *ValidarERotearTransacaoResponse) GetRailEscolhido() ValidarERotearTransacaoResponse_RailDestino {
 	if x != nil {
 		return x.RailEscolhido
 	}
-	return ResponseDirecionamento_RAIL_REJEITADO
+	return ValidarERotearTransacaoResponse_RAIL_DESTINO_REJEITADO_UNSPECIFIED
 }
 
-func (x *ResponseDirecionamento) GetHashAuditoriaEstado() string {
+func (x *ValidarERotearTransacaoResponse) GetHashAuditoriaEstado() string {
 	if x != nil {
 		return x.HashAuditoriaEstado
 	}
 	return ""
 }
 
-var File_contracts_cambio_proto protoreflect.FileDescriptor
+var File_cambio_regulatorio_v1_cambio_proto protoreflect.FileDescriptor
 
-const file_contracts_cambio_proto_rawDesc = "" +
+const file_cambio_regulatorio_v1_cambio_proto_rawDesc = "" +
 	"\n" +
-	"\x16contracts/cambio.proto\x12\x15cambio.regulatorio.v1\"\x94\x03\n" +
-	"\x10RequestTransacao\x12!\n" +
+	"\"cambio/regulatorio/v1/cambio.proto\x12\x15cambio.regulatorio.v1\"\xa8\x03\n" +
+	"\x1eValidarERotearTransacaoRequest\x12!\n" +
 	"\ftransacao_id\x18\x01 \x01(\tR\vtransacaoId\x12!\n" +
 	"\fcnae_emissor\x18\x02 \x01(\tR\vcnaeEmissor\x12!\n" +
 	"\fcnpj_emissor\x18\x03 \x01(\tR\vcnpjEmissor\x12,\n" +
-	"\x12valor_operacao_brl\x18\x04 \x01(\x01R\x10valorOperacaoBrl\x12*\n" +
-	"\x11moeda_destino_iso\x18\x05 \x01(\tR\x0fmoedaDestinoIso\x12)\n" +
+	"\x12valor_operacao_brl\x18\x04 \x01(\x01R\x10valorOperacaoBrl\x120\n" +
+	"\x14currency_destino_iso\x18\x05 \x01(\tR\x12currencyDestinoIso\x12)\n" +
 	"\x10latitude_destino\x18\x06 \x01(\x01R\x0flatitudeDestino\x12+\n" +
 	"\x11longitude_destino\x18\a \x01(\x01R\x10longitudeDestino\x126\n" +
 	"\x17documento_fiscal_sha256\x18\b \x01(\tR\x15documentoFiscalSha256\x12-\n" +
-	"\x12operacao_embedding\x18\t \x03(\x02R\x11operacaoEmbedding\"\x83\x04\n" +
-	"\x16ResponseDirecionamento\x12!\n" +
+	"\x12operacao_embedding\x18\t \x03(\x02R\x11operacaoEmbedding\"\xba\x04\n" +
+	"\x1fValidarERotearTransacaoResponse\x12!\n" +
 	"\ftransacao_id\x18\x01 \x01(\tR\vtransacaoId\x123\n" +
 	"\x15conformidade_aprovada\x18\x02 \x01(\bR\x14conformidadeAprovada\x120\n" +
 	"\x14aliquota_cbs_federal\x18\x03 \x01(\x01R\x12aliquotaCbsFederal\x122\n" +
 	"\x15aliquota_ibs_estadual\x18\x04 \x01(\x01R\x13aliquotaIbsEstadual\x127\n" +
-	"\x18valor_imposto_retido_brl\x18\x05 \x01(\x01R\x15valorImpostoRetidoBrl\x12`\n" +
-	"\x0erail_escolhido\x18\x06 \x01(\x0e29.cambio.regulatorio.v1.ResponseDirecionamento.RailDestinoR\rrailEscolhido\x122\n" +
-	"\x15hash_auditoria_estado\x18\a \x01(\tR\x13hashAuditoriaEstado\"\\\n" +
-	"\vRailDestino\x12\x12\n" +
-	"\x0eRAIL_REJEITADO\x10\x00\x12\x1a\n" +
-	"\x16RAIL_TRADICIONAL_HTTP2\x10\x01\x12\x1d\n" +
-	"\x19RAIL_DESCENTRALIZADO_WEB3\x10\x022\x8b\x01\n" +
-	"\x15RoteadorFiscalService\x12r\n" +
-	"\x18ValidarE_RotearTransacao\x12'.cambio.regulatorio.v1.RequestTransacao\x1a-.cambio.regulatorio.v1.ResponseDirecionamentoB,Z*svc-agente-go/regulatorio/v1;regulatoriov1b\x06proto3"
+	"\x18valor_imposto_retido_brl\x18\x05 \x01(\x01R\x15valorImpostoRetidoBrl\x12i\n" +
+	"\x0erail_escolhido\x18\x06 \x01(\x0e2B.cambio.regulatorio.v1.ValidarERotearTransacaoResponse.RailDestinoR\rrailEscolhido\x122\n" +
+	"\x15hash_auditoria_estado\x18\a \x01(\tR\x13hashAuditoriaEstado\"\x80\x01\n" +
+	"\vRailDestino\x12&\n" +
+	"\"RAIL_DESTINO_REJEITADO_UNSPECIFIED\x10\x00\x12\"\n" +
+	"\x1eRAIL_DESTINO_TRADICIONAL_HTTP2\x10\x01\x12%\n" +
+	"!RAIL_DESTINO_DESCENTRALIZADO_WEB3\x10\x022\xa2\x01\n" +
+	"\x15RoteadorFiscalService\x12\x88\x01\n" +
+	"\x17ValidarERotearTransacao\x125.cambio.regulatorio.v1.ValidarERotearTransacaoRequest\x1a6.cambio.regulatorio.v1.ValidarERotearTransacaoResponseB,Z*svc-agente-go/regulatorio/v1;regulatoriov1b\x06proto3"
 
 var (
-	file_contracts_cambio_proto_rawDescOnce sync.Once
-	file_contracts_cambio_proto_rawDescData []byte
+	file_cambio_regulatorio_v1_cambio_proto_rawDescOnce sync.Once
+	file_cambio_regulatorio_v1_cambio_proto_rawDescData []byte
 )
 
-func file_contracts_cambio_proto_rawDescGZIP() []byte {
-	file_contracts_cambio_proto_rawDescOnce.Do(func() {
-		file_contracts_cambio_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_contracts_cambio_proto_rawDesc), len(file_contracts_cambio_proto_rawDesc)))
+func file_cambio_regulatorio_v1_cambio_proto_rawDescGZIP() []byte {
+	file_cambio_regulatorio_v1_cambio_proto_rawDescOnce.Do(func() {
+		file_cambio_regulatorio_v1_cambio_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_cambio_regulatorio_v1_cambio_proto_rawDesc), len(file_cambio_regulatorio_v1_cambio_proto_rawDesc)))
 	})
-	return file_contracts_cambio_proto_rawDescData
+	return file_cambio_regulatorio_v1_cambio_proto_rawDescData
 }
 
-var file_contracts_cambio_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_contracts_cambio_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_contracts_cambio_proto_goTypes = []any{
-	(ResponseDirecionamento_RailDestino)(0), // 0: cambio.regulatorio.v1.ResponseDirecionamento.RailDestino
-	(*RequestTransacao)(nil),                // 1: cambio.regulatorio.v1.RequestTransacao
-	(*ResponseDirecionamento)(nil),          // 2: cambio.regulatorio.v1.ResponseDirecionamento
+var file_cambio_regulatorio_v1_cambio_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_cambio_regulatorio_v1_cambio_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_cambio_regulatorio_v1_cambio_proto_goTypes = []any{
+	(ValidarERotearTransacaoResponse_RailDestino)(0), // 0: cambio.regulatorio.v1.ValidarERotearTransacaoResponse.RailDestino
+	(*ValidarERotearTransacaoRequest)(nil),           // 1: cambio.regulatorio.v1.ValidarERotearTransacaoRequest
+	(*ValidarERotearTransacaoResponse)(nil),          // 2: cambio.regulatorio.v1.ValidarERotearTransacaoResponse
 }
-var file_contracts_cambio_proto_depIdxs = []int32{
-	0, // 0: cambio.regulatorio.v1.ResponseDirecionamento.rail_escolhido:type_name -> cambio.regulatorio.v1.ResponseDirecionamento.RailDestino
-	1, // 1: cambio.regulatorio.v1.RoteadorFiscalService.ValidarE_RotearTransacao:input_type -> cambio.regulatorio.v1.RequestTransacao
-	2, // 2: cambio.regulatorio.v1.RoteadorFiscalService.ValidarE_RotearTransacao:output_type -> cambio.regulatorio.v1.ResponseDirecionamento
+var file_cambio_regulatorio_v1_cambio_proto_depIdxs = []int32{
+	0, // 0: cambio.regulatorio.v1.ValidarERotearTransacaoResponse.rail_escolhido:type_name -> cambio.regulatorio.v1.ValidarERotearTransacaoResponse.RailDestino
+	1, // 1: cambio.regulatorio.v1.RoteadorFiscalService.ValidarERotearTransacao:input_type -> cambio.regulatorio.v1.ValidarERotearTransacaoRequest
+	2, // 2: cambio.regulatorio.v1.RoteadorFiscalService.ValidarERotearTransacao:output_type -> cambio.regulatorio.v1.ValidarERotearTransacaoResponse
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -336,27 +331,27 @@ var file_contracts_cambio_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_contracts_cambio_proto_init() }
-func file_contracts_cambio_proto_init() {
-	if File_contracts_cambio_proto != nil {
+func init() { file_cambio_regulatorio_v1_cambio_proto_init() }
+func file_cambio_regulatorio_v1_cambio_proto_init() {
+	if File_cambio_regulatorio_v1_cambio_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_contracts_cambio_proto_rawDesc), len(file_contracts_cambio_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_cambio_regulatorio_v1_cambio_proto_rawDesc), len(file_cambio_regulatorio_v1_cambio_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_contracts_cambio_proto_goTypes,
-		DependencyIndexes: file_contracts_cambio_proto_depIdxs,
-		EnumInfos:         file_contracts_cambio_proto_enumTypes,
-		MessageInfos:      file_contracts_cambio_proto_msgTypes,
+		GoTypes:           file_cambio_regulatorio_v1_cambio_proto_goTypes,
+		DependencyIndexes: file_cambio_regulatorio_v1_cambio_proto_depIdxs,
+		EnumInfos:         file_cambio_regulatorio_v1_cambio_proto_enumTypes,
+		MessageInfos:      file_cambio_regulatorio_v1_cambio_proto_msgTypes,
 	}.Build()
-	File_contracts_cambio_proto = out.File
-	file_contracts_cambio_proto_goTypes = nil
-	file_contracts_cambio_proto_depIdxs = nil
+	File_cambio_regulatorio_v1_cambio_proto = out.File
+	file_cambio_regulatorio_v1_cambio_proto_goTypes = nil
+	file_cambio_regulatorio_v1_cambio_proto_depIdxs = nil
 }

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v3.21.12
-// source: contracts/cambio.proto
+// source: cambio/regulatorio/v1/cambio.proto
 
 package regulatoriov1
 
@@ -19,17 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RoteadorFiscalService_ValidarE_RotearTransacao_FullMethodName = "/cambio.regulatorio.v1.RoteadorFiscalService/ValidarE_RotearTransacao"
+	RoteadorFiscalService_ValidarERotearTransacao_FullMethodName = "/cambio.regulatorio.v1.RoteadorFiscalService/ValidarERotearTransacao"
 )
 
 // RoteadorFiscalServiceClient is the client API for RoteadorFiscalService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// O primeiro diálogo inteligente da API
+// O primeiro diálogo inteligente da API estruturado sob o padrão rigoroso
 type RoteadorFiscalServiceClient interface {
-	// Transpõe o sinal em stream contínuo para máxima velocidade
-	ValidarE_RotearTransacao(ctx context.Context, in *RequestTransacao, opts ...grpc.CallOption) (*ResponseDirecionamento, error)
+	// Alterado para PascalCase puro sem sublinhado
+	ValidarERotearTransacao(ctx context.Context, in *ValidarERotearTransacaoRequest, opts ...grpc.CallOption) (*ValidarERotearTransacaoResponse, error)
 }
 
 type roteadorFiscalServiceClient struct {
@@ -40,10 +40,10 @@ func NewRoteadorFiscalServiceClient(cc grpc.ClientConnInterface) RoteadorFiscalS
 	return &roteadorFiscalServiceClient{cc}
 }
 
-func (c *roteadorFiscalServiceClient) ValidarE_RotearTransacao(ctx context.Context, in *RequestTransacao, opts ...grpc.CallOption) (*ResponseDirecionamento, error) {
+func (c *roteadorFiscalServiceClient) ValidarERotearTransacao(ctx context.Context, in *ValidarERotearTransacaoRequest, opts ...grpc.CallOption) (*ValidarERotearTransacaoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ResponseDirecionamento)
-	err := c.cc.Invoke(ctx, RoteadorFiscalService_ValidarE_RotearTransacao_FullMethodName, in, out, cOpts...)
+	out := new(ValidarERotearTransacaoResponse)
+	err := c.cc.Invoke(ctx, RoteadorFiscalService_ValidarERotearTransacao_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -54,10 +54,10 @@ func (c *roteadorFiscalServiceClient) ValidarE_RotearTransacao(ctx context.Conte
 // All implementations must embed UnimplementedRoteadorFiscalServiceServer
 // for forward compatibility.
 //
-// O primeiro diálogo inteligente da API
+// O primeiro diálogo inteligente da API estruturado sob o padrão rigoroso
 type RoteadorFiscalServiceServer interface {
-	// Transpõe o sinal em stream contínuo para máxima velocidade
-	ValidarE_RotearTransacao(context.Context, *RequestTransacao) (*ResponseDirecionamento, error)
+	// Alterado para PascalCase puro sem sublinhado
+	ValidarERotearTransacao(context.Context, *ValidarERotearTransacaoRequest) (*ValidarERotearTransacaoResponse, error)
 	mustEmbedUnimplementedRoteadorFiscalServiceServer()
 }
 
@@ -68,8 +68,8 @@ type RoteadorFiscalServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedRoteadorFiscalServiceServer struct{}
 
-func (UnimplementedRoteadorFiscalServiceServer) ValidarE_RotearTransacao(context.Context, *RequestTransacao) (*ResponseDirecionamento, error) {
-	return nil, status.Error(codes.Unimplemented, "method ValidarE_RotearTransacao not implemented")
+func (UnimplementedRoteadorFiscalServiceServer) ValidarERotearTransacao(context.Context, *ValidarERotearTransacaoRequest) (*ValidarERotearTransacaoResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ValidarERotearTransacao not implemented")
 }
 func (UnimplementedRoteadorFiscalServiceServer) mustEmbedUnimplementedRoteadorFiscalServiceServer() {}
 func (UnimplementedRoteadorFiscalServiceServer) testEmbeddedByValue()                               {}
@@ -92,20 +92,20 @@ func RegisterRoteadorFiscalServiceServer(s grpc.ServiceRegistrar, srv RoteadorFi
 	s.RegisterService(&RoteadorFiscalService_ServiceDesc, srv)
 }
 
-func _RoteadorFiscalService_ValidarE_RotearTransacao_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestTransacao)
+func _RoteadorFiscalService_ValidarERotearTransacao_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidarERotearTransacaoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoteadorFiscalServiceServer).ValidarE_RotearTransacao(ctx, in)
+		return srv.(RoteadorFiscalServiceServer).ValidarERotearTransacao(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: RoteadorFiscalService_ValidarE_RotearTransacao_FullMethodName,
+		FullMethod: RoteadorFiscalService_ValidarERotearTransacao_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoteadorFiscalServiceServer).ValidarE_RotearTransacao(ctx, req.(*RequestTransacao))
+		return srv.(RoteadorFiscalServiceServer).ValidarERotearTransacao(ctx, req.(*ValidarERotearTransacaoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -118,10 +118,10 @@ var RoteadorFiscalService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RoteadorFiscalServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ValidarE_RotearTransacao",
-			Handler:    _RoteadorFiscalService_ValidarE_RotearTransacao_Handler,
+			MethodName: "ValidarERotearTransacao",
+			Handler:    _RoteadorFiscalService_ValidarERotearTransacao_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contracts/cambio.proto",
+	Metadata: "cambio/regulatorio/v1/cambio.proto",
 }

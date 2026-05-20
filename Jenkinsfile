@@ -17,7 +17,8 @@ pipeline {
             steps {
                 echo '=== ESTÁGIO 1: Checando integridade do arquivo .proto ==='
                 // O comando "buf lint" impede alterações que quebrem o contrato binário
-                sh 'buf lint contracts/'
+                // Adicionada a flag --path para o buf entender a nova raiz
+                sh 'buf lint contracts/ --path contracts/cambio/regulatorio/v1/cambio.proto'
             }
         }
 
